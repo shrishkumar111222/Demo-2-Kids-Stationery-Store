@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --sunny: #ffd93d;
+    --sky: #5bc0ff;
+    --grape: #8b5cf6;
+    --bubble: #ff80bf;
+    --mint: #6ee7b7;
+    --cream: #fffdf8;
+    --ink: #2a2145;
+    --header-h: 76px;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--cream);
+    color: var(--ink);
+    font-feature-settings: "ss01", "cv01";
+    overflow-x: hidden;
+  }
+
+  /* Paper texture: faint dot grid over cream */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(42, 33, 69, 0.055) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 40%, transparent 100%);
+  }
+
+  ::selection {
+    background: var(--sunny);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--grape);
+    outline-offset: 3px;
+    border-radius: 12px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  /* Rounded, friendly scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #fff6e2;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #ffd93d;
+    border: 3px solid #fff6e2;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #f7c31b;
+  }
+}
+
+@layer components {
+  /* ---------- Sticker card: the signature motif ---------- */
+  .sticker {
+    position: relative;
+    background: #fff;
+    border-radius: 28px;
+    box-shadow:
+      0 2px 0 0 rgba(42, 33, 69, 0.04),
+      0 18px 40px -22px rgba(42, 33, 69, 0.4);
+    transition:
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* offset colour plate behind the card, like risograph print */
+  .sticker-plate::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--plate, var(--sunny));
+    transform: translate(10px, 12px) rotate(1.4deg);
+    z-index: -1;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sticker-hover:hover {
+    transform: translateY(-10px);
+    box-shadow:
+      0 2px 0 0 rgba(42, 33, 69, 0.04),
+      0 40px 70px -32px rgba(42, 33, 69, 0.5);
+  }
+  .sticker-hover:hover.sticker-plate::after {
+    transform: translate(16px, 20px) rotate(2.6deg);
+  }
+
+  /* ---------- Chunky button ---------- */
+  .btn {
+    @apply relative inline-flex select-none items-center justify-center gap-2 rounded-pill px-7 py-3.5 font-display text-base font-extrabold tracking-tight;
+    transition:
+      transform 0.18s cubic-bezier(0.22, 1.4, 0.36, 1),
+      box-shadow 0.18s ease,
+      filter 0.18s ease;
+    will-change: transform;
+  }
+  .btn:active {
+    transform: translateY(3px);
+  }
+  .btn-solid {
+    color: #2a2145;
+    box-shadow: 0 6px 0 0 var(--btn-shade, rgba(0, 0, 0, 0.18));
+  }
+  .btn-solid:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 0 0 var(--btn-shade, rgba(0, 0, 0, 0.18));
+  }
+  .btn-solid:active {
+    box-shadow: 0 2px 0 0 var(--btn-shade, rgba(0, 0, 0, 0.18));
+  }
+  .btn-ghost {
+    @apply bg-white text-ink;
+    box-shadow:
+      0 0 0 2px rgba(42, 33, 69, 0.08) inset,
+      0 6px 0 0 rgba(42, 33, 69, 0.1);
+  }
+  .btn-ghost:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 2px rgba(42, 33, 69, 0.14) inset,
+      0 9px 0 0 rgba(42, 33, 69, 0.1);
+  }
+
+  /* ---------- Glass chip (small cards only) ---------- */
+  .glass {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 14px 34px -20px rgba(42, 33, 69, 0.5);
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-pill bg-white px-4 py-1.5 font-display text-sm font-extrabold uppercase tracking-[0.14em];
+    box-shadow: 0 8px 22px -14px rgba(42, 33, 69, 0.6);
+  }
+
+  .rail {
+    @apply flex gap-5 overflow-x-auto pb-6 pt-2;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  .rail > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+  }
+
+  .no-bar {
+    scrollbar-width: none;
+  }
+  .no-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .headline-underline {
+    background-image: linear-gradient(transparent 62%, rgba(255, 217, 61, 0.85) 62%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding-inline: 0.15em;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-stroke-white {
+    -webkit-text-stroke: 3px #fff;
+    paint-order: stroke fill;
+  }
+  .mask-fade-r {
+    mask-image: linear-gradient(to right, #000 82%, transparent 100%);
+  }
+  .pause-hover:hover {
+    animation-play-state: paused;
+  }
+  .gradient-sunrise {
+    background: radial-gradient(120% 90% at 10% 0%, #fff6cf 0%, transparent 55%),
+      radial-gradient(100% 80% at 92% 8%, #d9f0ff 0%, transparent 58%),
+      radial-gradient(90% 70% at 50% 100%, #ffe9f4 0%, transparent 60%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
