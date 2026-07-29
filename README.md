@@ -80,6 +80,22 @@ businesses", a Without-a-website vs With-a-website comparison, and the closing
 - `Store`, `WebSite` and `FAQPage` JSON-LD, full Open Graph / Twitter metadata, `robots.ts`,
   `sitemap.ts`, self-hosted fonts via `next/font`, zero raster images.
 
+## Deploying
+
+The app is a static site — no server code, no API routes, no database.
+
+- **Vercel** (simplest): import the repo, accept the detected Next.js defaults, deploy.
+- **Any static host** (Netlify, Cloudflare Pages, GitHub Pages, a cPanel `public_html`):
+  add `output: "export"` to `next.config.mjs`, run `npm run build`, and upload the generated
+  `out/` folder. `robots.ts` and `sitemap.ts` are route handlers and need removing for that mode.
+
+Set `site.url` in `lib/site.ts` to the real domain before shipping — canonical URLs, Open Graph
+tags and the sitemap are all derived from it.
+
+The Google Maps panel probes whether Google is reachable and falls back to an address card with
+an "Open in Google Maps" link when embeds are blocked, so previews and strict-CSP hosts show
+something useful instead of an empty grey box.
+
 ## Customising for a real shop
 
 1. `lib/site.ts` — name, phone/WhatsApp number, address, hours, pricing.

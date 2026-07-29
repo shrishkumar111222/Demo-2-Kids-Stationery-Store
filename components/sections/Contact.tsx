@@ -11,6 +11,76 @@ const FIELDS = [
   { id: "email", label: "Email (optional)", type: "email", placeholder: "you@email.com", required: false },
 ] as const;
 
+/**
+ * Google's embed is blocked in some hosting contexts (strict CSP, sandboxed
+ * previews) and paints a dead grey rectangle instead. We can't detect that from
+ * the iframe itself — a blocked frame still fires `load` for its error page — so
+ * probe whether Google is reachable at all first, and only mount the embed if it
+ * is. Otherwise the address card stands in, which is still useful to a parent.
+ */
+function MapPanel() {
+  const [reachable, setReachable] = React.useState<boolean | null>(null);
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${site.mapQuery}`;
+
+  React.useEffect(() => {
+    const img = new Image();
+    const timer = window.setTimeout(() => setReachable(false), 3500);
+    const settle = (ok: boolean) => () => {
+      window.clearTimeout(timer);
+      setReachable(ok);
+    };
+    img.onload = settle(true);
+    img.onerror = settle(false);
+    img.src = `https://maps.google.com/favicon.ico?_=${Date.now()}`;
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="sticker relative h-64 overflow-hidden p-0 sm:h-72">
+      <div className="absolute inset-0 grid place-items-center bg-sky-50 p-6 text-center">
+        <div
+          className="absolute inset-0 opacity-[0.55]"
+          aria-hidden
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(91,192,255,.25) 2px, transparent 2px), linear-gradient(90deg, rgba(91,192,255,.25) 2px, transparent 2px)",
+            backgroundSize: "44px 44px",
+          }}
+        />
+        <div className="relative">
+          <span className="text-4xl" aria-hidden>
+            📍
+          </span>
+          <p className="mt-2 font-display text-lg font-extrabold">{site.name}</p>
+          <p className="mt-1 text-sm font-semibold text-ink-soft">
+            {site.addressLine}, {site.city}
+          </p>
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-solid mt-4 bg-sky px-6 py-2.5 text-sm"
+            style={{ ["--btn-shade" as string]: "#0B87D4" }}
+          >
+            Open in Google Maps
+          </a>
+        </div>
+      </div>
+
+      {reachable ? (
+        <iframe
+          title={`Map to ${site.name}`}
+          src={`https://maps.google.com/maps?q=${site.mapQuery}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+          className="absolute inset-0 h-full w-full border-0 animate-[pop_.5s_ease-out]"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
+        />
+      ) : null}
+    </div>
+  );
+}
+
 export function Contact() {
   const [values, setValues] = React.useState({ name: "", phone: "", email: "", message: "" });
 
@@ -140,16 +210,7 @@ export function Contact() {
               </ul>
             </div>
 
-            <div className="sticker overflow-hidden p-0">
-              <iframe
-                title={`Map to ${site.name}`}
-                src={`https://maps.google.com/maps?q=${site.mapQuery}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
-                className="h-64 w-full border-0 sm:h-72"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
+            <MapPanel />
           </Reveal>
         </div>
       </div>
