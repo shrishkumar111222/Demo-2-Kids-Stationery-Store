@@ -24,7 +24,7 @@ export const schoolEssentials: Product[] = [
   { id: "se-5", name: "Dust-Free Erasers (Set of 5)", art: "eraser", price: 60, mrp: 85, rating: 4.6, reviews: 189, plate: plate(4), blurb: "Erases clean, leaves no grey ghost." },
   { id: "se-6", name: "Cartoon Sharpener with Bin", art: "sharpener", price: 75, mrp: 99, rating: 4.7, reviews: 143, plate: plate(1), blurb: "Catches every shaving. No messy desks." },
   { id: "se-7", name: "Flexible 30cm Scale", art: "ruler", price: 45, mrp: 60, rating: 4.5, reviews: 97, plate: plate(2), blurb: "Bends but never breaks in the bag." },
-  { id: "se-8", name: "Complete Geometry Box", art: "geometry", price: 279, mrp: 399, rating: 4.8, reviews: 268, tag: "30% OFF", plate: plate(3), blurb: "Compass, divider, set squares & more." },
+  { id: "se-8", name: "Complete Geometry Box", art: "geometry", price: 279, mrp: 399, rating: 4.8, reviews: 268, tag: "Exam Ready", plate: plate(3), blurb: "Compass, divider, set squares & more." },
   { id: "se-9", name: "Exam-Approved Calculator", art: "calculator", price: 649, mrp: 799, rating: 4.7, reviews: 88, plate: plate(4), blurb: "Scientific, 240 functions, board-safe." },
   { id: "se-10", name: "Document Folders (Pack of 3)", art: "folder", price: 149, mrp: 199, rating: 4.6, reviews: 121, plate: plate(0), blurb: "Keeps projects crisp, not crumpled." },
 ];
