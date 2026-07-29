@@ -12,7 +12,7 @@ export const site = {
   hours: "Mon – Sat · 9:00 AM – 8:00 PM  ·  Sun · 11:00 AM – 6:00 PM",
   mapQuery: "Boring+Road+Patna+Bihar",
   demoPrice: "₹4,999",
-  url: "https://doodleanddot.example.com",
+  url: "https://shrishkumar111222.github.io/Demo-2-Kids-Stationery-Store",
 } as const;
 
 export function waLink(message: string) {

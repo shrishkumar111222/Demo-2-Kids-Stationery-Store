@@ -56,11 +56,12 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
-          # Automatically inject basePath in your Next.js configuration file and disable
-          # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
-          #
-          # You may remove this line if you want to manage the configuration yourself.
-          static_site_generator: next
+          # Turns Pages on for the repo if it isn't already, so this works
+          # without visiting Settings first.
+          enablement: true
+          # NOTE: static_site_generator: next is deliberately NOT set. It rewrites
+          # next.config to inject basePath, which would double up with the
+          # basePath this repo sets itself under GITHUB_PAGES=true.
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -74,6 +75,10 @@ jobs:
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
+        # GITHUB_PAGES switches on output:"export" + the /<repo>/ basePath.
+        # Without it there is no ./out for the upload step to find.
+        env:
+          GITHUB_PAGES: "true"
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -82,15 +82,31 @@ businesses", a Without-a-website vs With-a-website comparison, and the closing
 
 ## Deploying
 
-The app is a static site — no server code, no API routes, no database.
+**Live on GitHub Pages:** https://shrishkumar111222.github.io/Demo-2-Kids-Stationery-Store/
 
-- **Vercel** (simplest): import the repo, accept the detected Next.js defaults, deploy.
-- **Any static host** (Netlify, Cloudflare Pages, GitHub Pages, a cPanel `public_html`):
-  add `output: "export"` to `next.config.mjs`, run `npm run build`, and upload the generated
-  `out/` folder. `robots.ts` and `sitemap.ts` are route handlers and need removing for that mode.
+`.github/workflows/nextjs.yml` builds and publishes on every push to the feature branch, so the
+live site tracks the repo with no manual step. It also switches Pages on for the repo itself
+(`configure-pages` with `enablement: true`).
 
-Set `site.url` in `lib/site.ts` to the real domain before shipping — canonical URLs, Open Graph
-tags and the sitemap are all derived from it.
+The app is a static site — no server code, no API routes, no database — so `npm run build:pages`
+produces a plain `out/` folder that any host can serve.
+
+Two details that GitHub Pages specifically needs, both already wired up:
+
+- **`basePath`** — Pages serves a project site from `/<repo>/`, so the build sets
+  `basePath` / `assetPrefix` when `GITHUB_PAGES=true`. Without it every asset resolves to the
+  domain root and 404s. It's opt-in so local dev and a future custom domain stay clean.
+- **`public/.nojekyll`** — Pages runs Jekyll by default, and Jekyll silently drops
+  underscore-prefixed directories, which would delete every `/_next/` asset.
+
+`robots.ts` and `sitemap.ts` declare `export const dynamic = "force-static"`, which is what
+`output: "export"` requires of route handlers.
+
+**Other hosts:** Vercel or Netlify need none of the above — import the repo and accept the
+detected Next.js defaults. Drop the `GITHUB_PAGES` env var so no `basePath` is applied.
+
+Set `site.url` in `lib/site.ts` when you move to a real domain — canonical URLs, Open Graph tags
+and the sitemap are all derived from it.
 
 The Google Maps panel probes whether Google is reachable and falls back to an address card with
 an "Open in Google Maps" link when embeds are blocked, so previews and strict-CSP hosts show
